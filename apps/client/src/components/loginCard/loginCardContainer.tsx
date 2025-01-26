@@ -8,6 +8,7 @@ import { LoginSchema } from '@common/schemas/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { login } from '@processes/auth';
 import { userStore } from '@stores/index';
+import { localStorageSet } from '@utils/storage';
 import { errorToast, successToast } from '@utils/toast';
 import { redirect } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -38,6 +39,9 @@ const LoginCardContainer = ({ toggleAuthMode }: AuthCardProps) => {
             }
 
             setUser(data.user);
+
+            localStorageSet('token', data.token);
+            localStorageSet('user', data.user);
 
             setTimeout(() => {
                 successToast('Login efetuado com sucesso!');
