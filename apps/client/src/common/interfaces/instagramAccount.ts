@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 interface InstagramAccountStore {
 	id: string;
+	accountId: string;
 	userId: string;
 	username: string;
 	fullName?: string;

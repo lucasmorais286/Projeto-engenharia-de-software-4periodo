@@ -20,6 +20,15 @@ export class Post {
 	@Prop({ required: true, type: String })
 	userId: string;
 
+	@Prop({ required: true, type: String })
+	accountId: string;
+
+	@Prop({ required: true, type: String })
+	postId: string;
+
+	@Prop({ required: true, type: String })
+	code: string;
+
 	@Prop({ required: false, type: String })
 	jobId: string;
 }

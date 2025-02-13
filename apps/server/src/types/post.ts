@@ -1,4 +1,4 @@
-import { CreatePostDto } from '@modules/post/dto/post.dto';
+import { CreatePostDto, GetAllPostsQueryDto } from '@modules/post/dto/post.dto';
 import { Meta } from './meta';
 import { Session } from '@schemas/token';
 
@@ -22,5 +22,12 @@ export type PostBodyCreate = {
 
 export type CanceledPostBody = {
 	postId: string;
-	username: string;
 };
+
+export type GetUserPostsProps = {
+	query: {
+		page?: number;
+		limit?: number;
+	};
+	meta: Meta
+}

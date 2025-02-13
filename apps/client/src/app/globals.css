@@ -108,3 +108,26 @@ body {
 ::-webkit-scrollbar-thumb:horizontal {
   background-color: #190041;
 }
+
+.thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #190041;
+  border-radius: 10px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #2a0066;
+}
+
+/* Para Firefox */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #190041 transparent;
+}

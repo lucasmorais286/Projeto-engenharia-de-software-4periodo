@@ -40,7 +40,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, disabled, asChild = false, ...props }, ref) => {
         const Comp = asChild ? Slot : 'button';
 
-        const disabledClasses = disabled ? 'cursor-not-allowed opacity-50' : '';
+        const disabledClasses = disabled ? 'cursor-not-allowed opacity-30' : '';
 
         return (
             <Comp

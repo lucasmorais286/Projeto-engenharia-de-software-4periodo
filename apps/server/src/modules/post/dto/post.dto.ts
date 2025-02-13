@@ -1,6 +1,6 @@
 import { Escape } from 'class-sanitizer';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsOptional, IsString, IsUrl, ValidateIf } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString, IsUrl, ValidateIf, IsNumber } from 'class-validator';
 import * as sanitizeHtml from 'sanitize-html';
 
 export class CreatePostDto {
@@ -30,9 +30,16 @@ export class CancelPostQueryDto {
 	@IsNotEmpty()
 	@ValidateIf((obj) => !obj.username)
 	postId: string;
-
-	@IsString()
-	@IsNotEmpty()
-	@ValidateIf((obj) => !obj.postId)
-	username: string;
 }
+
+export class GetAllPostsQueryDto {
+	@IsOptional()
+	@IsNumber()
+	page: number;
+
+	@IsOptional()
+	@IsNumber()
+	limit: number;
+}
+
+
