@@ -48,7 +48,7 @@ export class IdeogramRepository implements ImageGenerationService {
 		const uploadedImage = await this.storageService.downloadAndUploadImage(url);
 
 		return {
-			url: uploadedImage.url,
+			url: uploadedImage.key,
 		};
 	}
 }

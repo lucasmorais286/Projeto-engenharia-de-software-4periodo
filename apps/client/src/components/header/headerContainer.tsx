@@ -10,11 +10,13 @@ import { getUserInstagramAccounts } from '@processes/instagramAccount';
 import { useQuery } from '@tanstack/react-query';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import userStore from '@stores/userStore';
 import Header from './header';
 
 const HeaderContainer = () => {
 	const [modalOpen, setModalOpen] = useState(false);
 	const [isLogin, setIsLogin] = useState(false);
+	const { user } = userStore();
 
 	const {
 		register,
@@ -35,7 +37,7 @@ const HeaderContainer = () => {
 	const { mutate: instagramLogoutMutate } = useInstagramMutation('logout');
 
 	const { data } = useQuery<{ data: InstagramAccountStore[] }>({
-		queryKey: ['instagram-accounts'],
+		queryKey: ['instagram-accounts', user?.email],
 		queryFn: () => getUserInstagramAccounts(),
 	});
 

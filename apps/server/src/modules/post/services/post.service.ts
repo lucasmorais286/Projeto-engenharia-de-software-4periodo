@@ -7,6 +7,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { Post } from '@schemas/post.schema';
 import { Session } from '@schemas/token';
 import { User } from '@schemas/user.schema';
+import { R2Storage } from '@storages/r2-storage';
 import { DefaultPostBodyCreate, GetUserPostsProps, PublishedPostProps, VerifyPostPublishProps } from '@type/post';
 import { CronJob } from 'cron';
 import * as dayjs from 'dayjs';
@@ -24,7 +25,8 @@ export class PostService {
 		@InjectModel(Post.name) private readonly postModel: Model<Post>,
 		private readonly ig: IgApiClient,
 		private readonly instagramAuthService: InstagramAuthService,
-		private schedulerRegistry: SchedulerRegistry
+		private readonly uploadService: R2Storage,
+		private schedulerRegistry: SchedulerRegistry,
 	) {}
 
 	async create({ data, meta }: DefaultPostBodyCreate) {
@@ -424,20 +426,22 @@ export class PostService {
             try {
                 const instagramInfo = post.postId ? (await this.getInstagramPostInfo(post.postId, post.account.username, post.account.session)) : null
 
-								const postWithoutAccountSession = {
-									...post,
-									account: {
-										...post.account,
-										session: undefined
-									}
-								}
+				const profilePicUrl = await this.uploadService.getSignedImageUrl(post.account.profilePicUrl);
 
-								return {
-										...postWithoutAccountSession,
-										...(instagramInfo ?? [])
-								};
+				const postWithoutAccountSession = {
+					...post,
+					account: {
+						...post.account,
+						profilePicUrl: await this.instagramAuthService.validateProfilePicUrl(profilePicUrl),
+						session: undefined
+					}
+				}
+
+				return {
+						...postWithoutAccountSession,
+						...(instagramInfo ?? [])
+				};
             } catch (error) {
-                console.log(error)
                 this.logger.error('Failed to fetch Instagram post info', { postId: post.postId, error });
                 return post;
             }

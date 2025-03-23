@@ -1,18 +1,18 @@
 'use client';
-import { useEffect, useState } from 'react';
 import type React from 'react';
+import { useEffect, useState } from 'react';
 
 import type { InstagramAccountStore } from '@common/interfaces/instagramAccount';
 import type { PostFormData } from '@common/interfaces/post';
 import { useCreatePost } from '@hooks/post';
 import userStore from '@stores/userStore';
-import { successToast, errorToast, warningToast } from '@utils/toast';
+import { errorToast, successToast, warningToast } from '@utils/toast';
 import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
-import PostDetailsUI from './postDetailsUi';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
+import PostDetailsUI from './postDetailsUi';
 
 export default function PostDetailsContainer() {
 	const [showCalendar, setShowCalendar] = useState(false);
@@ -80,14 +80,10 @@ export default function PostDetailsContainer() {
 			return;
 		}
 
-		console.log(data, 'data');
-
 		const formattedData = {
 			...data,
 			post_date: data.post_date === '' ? null : data.post_date,
 		};
-
-		console.log(formattedData, 'formattedData')
 
 		await createPost(formattedData);
 

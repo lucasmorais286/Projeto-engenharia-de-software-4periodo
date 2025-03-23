@@ -1,10 +1,10 @@
 import { mappedErrors } from "@common/constants/error";
 import { PostEntityWithDetails } from "@common/interfaces/post";
 import { Button } from "@components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@components/ui/dropdown-menu";
 import { cancelPost } from "@processes/posts";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@components/ui/dropdown-menu";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { successToast, errorToast } from "@utils/toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { errorToast, successToast } from "@utils/toast";
 import { MoreVertical } from "lucide-react";
 import { useState } from "react";
 import { SeePostModal } from "../SeePostModal/SeePostModal";
@@ -48,7 +48,6 @@ export const ActionsDropdown = ({ post }: { post: PostEntityWithDetails }) => {
       successToast("Post cancelado com sucesso")
     },
     onError: (error: Error) => {
-      console.log(error)
       const errorMessage = mappedErrors[error?.message] ?? 'Algo de errado aconteceu, tente novamente.'
       errorToast(errorMessage)
     },

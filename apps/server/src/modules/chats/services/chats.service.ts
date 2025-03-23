@@ -1,17 +1,21 @@
 import { Pagination } from '@common/dto/pagination.dto';
 import { ImageGenerationService } from '@modules/image-generation/service/image-generation.service';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Chat, ChatDocument } from '@schemas/chat.schema';
 import { Interaction } from '@schemas/interaction.schema';
+import { R2Storage } from '@storages/r2-storage';
 import { ListChatInteractionsOptions, RegenerateMessageData, SendMessageData } from '@type/chats';
+import dayjs from 'dayjs';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class ChatsService {
 	constructor(
 		@InjectModel(Chat.name) private chatModel: Model<ChatDocument>,
-		private readonly imageGenerationService: ImageGenerationService
+		private readonly imageGenerationService: ImageGenerationService,
+		private readonly uploaderService: R2Storage,
+
 	) {}
 
 	findChat(chatId: string, userId: string) {
@@ -62,11 +66,12 @@ export class ChatsService {
 			request: message,
 			response: url,
 			is_regenerated: false,
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createdAt: dayjs().toDate(),
+			updatedAt: dayjs().toDate(),
 		};
 
 		chat.interactions.push(interactionBody);
+		chat.updatedAt = dayjs().toDate();
 
 		await chat.save();
 
@@ -77,10 +82,11 @@ export class ChatsService {
 				firstMessage: chat.first_message,
 				id: chat._id,
 				createdAt: chat.createdAt,
+				updatedAt: chat.updatedAt,
 			},
 			interaction: {
 				request: interactionBody.request,
-				response: interactionBody.response,
+				response: await this.uploaderService.getSignedImageUrl(url),
 				isRegenerated: interactionBody.is_regenerated,
 			},
 		};
@@ -155,7 +161,16 @@ export class ChatsService {
 	async listChatInteractions({ params, meta }: ListChatInteractionsOptions) {
 		const chat = await this.findChat(params.chatId, meta.userId.toString());
 
-		return chat.interactions.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+		const interactions = await Promise.all(
+			chat.interactions
+				.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+				.map(async (interaction) => ({
+					...interaction,
+					response: await this.uploaderService.getSignedImageUrl(interaction.response),
+				}))
+		);
+
+		return interactions;
 	}
 
 	async listUserChats({ userId, pagination }: { userId: string; pagination?: Pagination }) {
@@ -163,7 +178,7 @@ export class ChatsService {
 
 		const chats = await this.chatModel
 			.find({ user_id: userId.toString() })
-			.sort({ createdAt: -1, _id: -1 })
+			.sort({ updatedAt: -1, _id: -1 })
 			.skip(offset)
 			.limit(perPage)
 			.lean();

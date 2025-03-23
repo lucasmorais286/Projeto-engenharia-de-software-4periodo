@@ -1,10 +1,10 @@
 import { DEFAULT_PROMPT } from '@constants/ai';
+import { ImageGenerationService } from '@modules/image-generation/service/image-generation.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { R2Storage } from '@storages/r2-storage';
 import { OpenAI } from 'openai';
 import { CreateOpenaiDto } from '../dto/openai.dto';
-import { ImageGenerationService } from '@modules/image-generation/service/image-generation.service';
 
 @Injectable()
 export class OpenaiService {
@@ -37,7 +37,7 @@ export class OpenaiService {
 		const uploadedImage = await this.storageService.downloadAndUploadImage(url);
 
 		return {
-			url: uploadedImage.url,
+			url: uploadedImage.key,
 		};
 	}
 }

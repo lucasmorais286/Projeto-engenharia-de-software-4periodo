@@ -5,9 +5,9 @@ export interface UploadParams {
 }
 
 export abstract class Uploader {
-    abstract upload(params: UploadParams): Promise<{ url: string }>;
+    abstract upload(params: UploadParams): Promise<{ key: string }>;
 
     abstract getSignedImageUrl(fileName: string): Promise<string>;
 
-    abstract downloadAndUploadImage(url: string): Promise<{ url: string }>;
+    abstract downloadAndUploadImage(url: string): Promise<{ key: string }>;
 }

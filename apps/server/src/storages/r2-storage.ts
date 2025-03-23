@@ -24,7 +24,7 @@ export class R2Storage implements Uploader {
 		});
 	}
 
-	async upload({ fileName, fileType, body }: UploadParams): Promise<{ url: string }> {
+	async upload({ fileName, fileType, body }: UploadParams): Promise<{ key: string }> {
 		const uploadId = randomUUID();
 
 		const uniqueFileName = `${uploadId}-${fileName}`;
@@ -39,7 +39,7 @@ export class R2Storage implements Uploader {
 		);
 
 		return {
-			url: uniqueFileName,
+			key: uniqueFileName,
 		};
 	}
 
@@ -54,21 +54,15 @@ export class R2Storage implements Uploader {
 		return getSignedUrl(this.client, command, { expiresIn: 3600 });
 	}
 
-	async downloadAndUploadImage(url: string): Promise<{ url: string }> {
+	async downloadAndUploadImage(url: string): Promise<{ key: string }> {
 		const response = await axios.get(url, { responseType: 'arraybuffer' });
 
 		const mimeType = response.headers['content-type'];
 
-		const uploadedFileKey = await this.upload({
+		return await this.upload({
 			fileType: mimeType,
 			fileName: 'image.jpg',
 			body: response.data,
 		});
-
-		const signedUrl = await this.getSignedImageUrl(uploadedFileKey.url);
-
-		return {
-			url: signedUrl,
-		};
 	}
 }

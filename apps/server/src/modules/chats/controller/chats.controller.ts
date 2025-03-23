@@ -1,3 +1,4 @@
+import { Pagination } from '@common/dto/pagination.dto';
 import { Meta } from '@decorators/meta.decorator';
 import { Paginate } from '@decorators/pagination.decorator';
 import { AuthGuard } from '@guards/auth.guard';
@@ -7,7 +8,6 @@ import BaseController from '@utils/base-controller';
 import { Response as ExpressResponse } from 'express';
 import { CreateChatDto, ListChatInteractionsParamsDto, RegenerateMessageDto } from '../dto/chats.dto';
 import { ChatsService } from '../services/chats.service';
-import { Pagination } from '@common/dto/pagination.dto';
 
 @UseGuards(AuthGuard)
 @Controller('chats')
@@ -28,7 +28,6 @@ export class ChatsController extends BaseController {
 
 			return this.sendSuccess({ data: response, res });
 		} catch (error) {
-			console.log(error);
 			return this.sendError({ error, res });
 		}
 	}
@@ -47,7 +46,6 @@ export class ChatsController extends BaseController {
 
 			return this.sendSuccess({ data: response, res });
 		} catch (error) {
-			console.log(error);
 			return this.sendError({ error, res });
 		}
 	}

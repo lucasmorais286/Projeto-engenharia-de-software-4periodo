@@ -7,7 +7,7 @@ export const getUserPostsWithDetails = async ({ page, limit} : {page?: number, l
 		params: {
 			page,
 			limit
-		},	
+		},
 	});
 
 	return {
@@ -17,7 +17,7 @@ export const getUserPostsWithDetails = async ({ page, limit} : {page?: number, l
 
 export const cancelPost = async ({ postId,  }: { postId: string }) => {
   const { data }: ClientResponse = await client.post(`/posts/cancel/${postId}`);
-	
+
 	return {
 		data,
 	};
