@@ -23,10 +23,10 @@ export class Post {
 	@Prop({ required: true, type: String })
 	accountId: string;
 
-	@Prop({ required: false, type: String })
+	@Prop({ required: false, type: String, default: null })
 	postId: string;
 
-	@Prop({ required: false, type: String })
+	@Prop({ required: false, type: String, default: null })
 	code: string;
 
 	@Prop({ required: false, type: String })
